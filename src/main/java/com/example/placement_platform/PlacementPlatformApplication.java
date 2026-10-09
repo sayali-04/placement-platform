@@ -1,0 +1,19 @@
+package com.example.placement_platform;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration;
+
+import javax.sql.DataSource;
+
+@SpringBootApplication
+public class PlacementPlatformApplication {
+
+	public static void main(String[] args) {
+
+		SpringApplication.run(PlacementPlatformApplication.class, args);
+		System.out.println("Placement Platform Application Started");
+	}
+
+
+}
