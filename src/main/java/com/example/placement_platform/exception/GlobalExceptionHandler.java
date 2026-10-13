@@ -14,8 +14,16 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import java.time.Instant;
 import java.util.stream.Collectors;
 
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
+    public ResponseEntity<ErrorResponse> handleOptimisticLock(ObjectOptimisticLockingFailureException ex) {
+        return build(HttpStatus.CONFLICT,
+                "This record was changed by someone else. Reload and try again.");
+    }
 
 
     @ExceptionHandler(InvalidCredentialsException.class)
