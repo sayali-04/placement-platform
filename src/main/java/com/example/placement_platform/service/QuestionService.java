@@ -10,6 +10,13 @@ import com.example.placement_platform.repository.TopicRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.placement_platform.dto.PageResponse;
+import com.example.placement_platform.entity.Difficulty;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
 import java.util.List;
 
 @Service
@@ -67,6 +74,21 @@ public class QuestionService {
             throw new ResourceNotFoundException("Question not found with id " + id);
         }
         questionRepository.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public PageResponse<QuestionResponse> searchQuestions(Long topicId, Difficulty difficulty,
+                                                          String keyword, int page, int size) {
+        if (topicId != null) {
+            findTopicOrThrow(topicId);
+        }
+        int safePage = Math.max(page, 0);
+        int safeSize = Math.min(Math.max(size, 1), 50);
+        String pattern = "%" + (keyword == null ? "" : keyword.trim().toLowerCase()) + "%";
+
+        Pageable pageable = PageRequest.of(safePage, safeSize, Sort.by("id"));
+        Page<Question> result = questionRepository.search(topicId, difficulty, pattern, pageable);
+        return PageResponse.from(result.map(this::toResponse));
     }
 
     private Question findQuestionOrThrow(Long id) {

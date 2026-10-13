@@ -8,6 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.example.placement_platform.dto.PageResponse;
+import com.example.placement_platform.entity.Difficulty;
+
 import java.util.List;
 
 @RestController
@@ -27,11 +30,13 @@ public class QuestionController {
     }
 
     @GetMapping
-    public List<QuestionResponse> getQuestions(@RequestParam(required = false) Long topicId) {
-        if (topicId != null) {
-            return questionService.getQuestionsByTopic(topicId);
-        }
-        return questionService.getAllQuestions();
+    public PageResponse<QuestionResponse> getQuestions(
+            @RequestParam(required = false) Long topicId,
+            @RequestParam(required = false) Difficulty difficulty,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return questionService.searchQuestions(topicId, difficulty, keyword, page, size);
     }
 
     @GetMapping("/{id}")
