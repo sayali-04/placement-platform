@@ -10,6 +10,8 @@ import com.example.placement_platform.dto.TopicStats;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.example.placement_platform.dto.PrepQuestion;
+
 import java.util.List;
 
 public interface AttemptRepository extends JpaRepository<Attempt, Long> {
@@ -29,4 +31,19 @@ public interface AttemptRepository extends JpaRepository<Attempt, Long> {
         """)
     List<TopicStats> findTopicStats(@Param("email") String email,
                                     @Param("minAttempts") long minAttempts);
+
+    @Query("""
+        select new com.example.placement_platform.dto.PrepQuestion(
+            q.id, q.questionText, t.name, a.attemptedAt)
+        from Attempt a
+        join a.question q
+        join q.topic t
+        where a.user.email = :email
+          and a.correct = false
+          and a.attemptedAt = (
+              select max(a2.attemptedAt) from Attempt a2
+              where a2.user = a.user and a2.question = a.question)
+        order by a.attemptedAt desc
+        """)
+    List<PrepQuestion> findLatestWrong(@Param("email") String email, Pageable pageable);
 }
