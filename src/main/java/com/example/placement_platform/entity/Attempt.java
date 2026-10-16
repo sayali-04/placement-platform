@@ -5,7 +5,10 @@ import jakarta.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "attempts")
+@Table(name = "attempts", indexes = {
+        @Index(name = "idx_attempts_user_attempted", columnList = "user_id, attempted_at"),
+        @Index(name = "idx_attempts_question", columnList = "question_id")
+})
 public class Attempt {
     public Long getId() {
         return id;
@@ -64,4 +67,6 @@ public class Attempt {
 
     @Column(name = "attempted_at", nullable = false, updatable = false)
     private Instant attemptedAt;
+
+
 }

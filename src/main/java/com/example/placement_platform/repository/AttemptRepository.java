@@ -12,9 +12,13 @@ import org.springframework.data.repository.query.Param;
 
 import com.example.placement_platform.dto.PrepQuestion;
 
+import org.springframework.data.jpa.repository.EntityGraph;
+
 import java.util.List;
 
 public interface AttemptRepository extends JpaRepository<Attempt, Long> {
+
+    @EntityGraph(attributePaths = "question")
 
     Page<Attempt> findByUserEmail(String email, Pageable pageable);
 

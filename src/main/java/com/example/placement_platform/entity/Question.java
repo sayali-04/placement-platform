@@ -3,7 +3,9 @@ package com.example.placement_platform.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "questions")
+@Table(name = "questions", indexes = {
+        @Index(name = "idx_questions_topic", columnList = "topic_id")
+})
 public class Question {
 
     @Id

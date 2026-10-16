@@ -5,7 +5,10 @@ import jakarta.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "rounds")
+@Table(name = "rounds", indexes = {
+        @Index(name = "idx_rounds_application", columnList = "application_id"),
+        @Index(name = "idx_rounds_result_scheduled", columnList = "result, scheduled_at")
+})
 public class Round {
 
     @Id
